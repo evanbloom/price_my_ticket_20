@@ -1,0 +1,1 @@
+0 0 * * * source ~/price_my_ticket_20/sync_data.sh
