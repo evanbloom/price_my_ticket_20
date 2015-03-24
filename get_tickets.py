@@ -14,6 +14,7 @@ from pandas.lib import Timestamp
 import datetime
 import random
 import time
+import sys
 
 def pull_event_data(event_id):
     url = 'http://www.stubhub.com/ticketAPI/restSvc/event/%s' %event_id
@@ -50,7 +51,7 @@ def grab_data (events_table, random_init=False):
     
     events_table['last_api_call']=None
     count= 0
-    while keep_pulling:
+    while True:
         try:
             for i in events_table.index:
                 current_time= datetime.datetime.utcnow()
@@ -61,7 +62,7 @@ def grab_data (events_table, random_init=False):
 
 
                 #If no last querry then qury
-                if events_table.last_api_call == None:
+                if events_table.last_api_call[i] == None:
                     tickets = pull_event_data(events_table.event_id[i])
                     #If Random Init = True, then pause for random amount of time
                     if random_init:
@@ -94,11 +95,16 @@ def grab_data (events_table, random_init=False):
                 file_address = "~/"+datetime.datetime.now().strftime('%Y_%m_%d')
                 events_table.last_api_call[i] = current_time
                 tickets.to_csv (file_address + file_name ,  sep='\t', head=False)
-                count +=1
+                print "wrote", file_name, datetime.datetime.now(), events_table.event_id[i]
+		sys.stdout.flush()
+		count +=1
 	except:
 	    continue
     return None 
    
 if __name__ == "__main__":
-    events_table = pd.read_csv("MLB_all_regseason_games_2015.csv")
-    grab_data(events_table, True)
+    #events_table = pd.read_csv("MLB_all_regseason_games_2015.csv")
+    #grab_data(events_table, True)
+
+    a= pull_event_data(9164818)
+    print a.head()
