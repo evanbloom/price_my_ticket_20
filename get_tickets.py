@@ -45,13 +45,10 @@ def pull_event_data(event_id):
     return(ticket_frame)
 
 
-# In[3]:
 
 def grab_data (events_table, random_init=False):
     
     events_table['last_api_call']=None
-    file_address = #####Fill in file address here
-    file_name = #Fill in file name here
     count= 0
     while keep_pulling:
         try:
@@ -75,26 +72,33 @@ def grab_data (events_table, random_init=False):
 
                     if time_from_last.seconds > (60*60*6):
                         tickets = pull_event_data(events_table.event_id[i])
-                    else: pass
+                    else: 
+			pass
 
                #if game is between 7 and 1 day away, pull every hour
                 elif until_game.seconds()//(60*60*24) > 1:
                     if time_from_last.seconds > (60*60):
                         tickets = pull_event_data(events_table.event_id[i])
-                        else: pass
+                    else:
+			pass
                #if game is less than one day away, pull every five minues
                 elif until_game.seconds() >0:
                     if time_from_last.seconds > (60*60):
                         tickets = pull_event_data(events_table.event_id[i])
+		    else:
+			pass
                 else:
                     continue
 
                 file_name = "Part"+str(count).zfill(8)
                 file_address = "~/"+datetime.datetime.now().strftime('%Y_%m_%d')
                 events_table.last_api_call[i] = current_time
-                tickets.to_csv (file_address + file_name ,  sep='\t')
-                count +=1 
-        
+                tickets.to_csv (file_address + file_name ,  sep='\t', head=False)
+                count +=1
+	except:
+	    continue
+    return None 
+   
 if __name__ == "__main__":
     events_table = pd.read_csv("MLB_all_regseason_games_2015.csv")
     grab_data(events_table, True)
